@@ -1,6 +1,6 @@
-# task_manager
+# task_manager(operating system lab project)
 
-A new Flutter project.
+A new Flutter project(linux application).
 
 ## Getting Started
 
