@@ -27,11 +27,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(flex: 2, child: Options()),
-                  SizedBox(
-                    height: double.infinity,
-                    child: VerticalDivider(thickness: 2, width: 2),
-                  ),
+                  Expanded(flex: 3, child: Options()),
+                  // SizedBox(
+                  //   height: double.infinity,
+                  //   child: VerticalDivider(thickness: 2, width: 2),
+                  // ),
                   Expanded(
                     flex: 10,
                     child: Center(child: Visualization()),

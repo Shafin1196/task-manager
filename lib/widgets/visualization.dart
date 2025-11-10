@@ -16,50 +16,66 @@ class _VisualizationState extends ConsumerState<Visualization> {
   Widget build(BuildContext context) {
     final option = ref.watch(selectProvider);
     return SafeArea(
-      child: Column(
-        children: [
-          SizedBox(height: 40),
-          Consumer(
-            builder: (context, ref, child) {
-              final model=ref.watch(cpuProvider);
-              return model.when(
-                data: (data){
-                  return Padding(
-                    padding: EdgeInsetsGeometry.only(left: 30,right: 30),
-                    child: Row(children: [
-                                    Text(option),
-                                    Spacer(),
-                                    Text(data),
-                    
-                                  ]
-                                  ),
-                  );
-                }, 
-                error:( error,stack)=>Text(''), 
-                loading: ()=>Text("")
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20,right: 20),
+        child: Column(
+          
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 40),
+            Consumer(
+              builder: (context, ref, child) {
+                final model = ref.watch(cpuProvider);
+                return model.when(
+                  data: (data) {
+                    return  Row(children: [Text(option), Spacer(), Text(data)]);
+                  },
+                  error: (error, stack) => Text(''),
+                  loading: () => Text(""),
                 );
-            },
-          ),
-          SizedBox(height: 10),
-          Expanded(child: VisualTest()),
-          Consumer(
-            builder: (context, ref, child) {
-              final streams = ref.watch(cpuBuilder);
-              return streams.when(
-                data: (data) {
-                  return Column(
-                    children: [
-                      for (var i in data.entries)
-                        Text("${i.key} -> ${i.value}"),
-                    ],
-                  );
-                },
-                error: (error, stack) => Center(child: Text("Error")),
-                loading: () => Center(child: CircularProgressIndicator()),
-              );
-            },
-          ),
-        ],
+              },
+            ),
+            SizedBox(height: 10),
+             Row(
+                children: [
+                  Text("% Utilization"), 
+                  Spacer(), 
+                  Text("100%"),
+                  ],
+                ),
+            
+            
+            VisualTest(),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("0 sec"), 
+                  Spacer(), 
+                  Text("60 sec"),
+                  ],
+                ),
+            SizedBox(height: 10,),
+            Consumer(
+              builder: (context, ref, child) {
+                final streams = ref.watch(cpuBuilder);
+                return streams.when(
+                  data: (data) {
+                    return Column(
+                     
+                      children: [
+                        if(data.containsKey('id'))
+                        Text("Utilization\n${(100-data['id']!).toStringAsFixed(2)} %"),
+                      ],
+                    );
+                  },
+                  error: (error, stack) => Center(child: Text("Error")),
+                  loading: () => Center(child: CircularProgressIndicator()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

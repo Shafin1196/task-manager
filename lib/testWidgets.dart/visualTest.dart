@@ -19,7 +19,7 @@ class _VisualTestState extends ConsumerState<VisualTest> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 300,
-      width: 750,
+      width: 700,
       child: Consumer(
         builder: (context, ref, child) {
           final streams = ref.watch(cpuBuilder);
@@ -30,7 +30,8 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                 spots.removeAt(0);
               }
               if (data.containsKey('id')) {
-                spots.add(FlSpot(x, (100 - data['id']!)));
+                double yValue=double.parse((100 - data['id']!).toStringAsFixed(2));
+                yValue>=0?spots.add(FlSpot(x, yValue)):spots.add(FlSpot(x, 0));
                 x++;
               }
               if(x>60){
@@ -68,10 +69,10 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                       isCurved: true,
                       gradient: LinearGradient(
                         colors: gradientColor
-                            .map((color) => color.withOpacity(0.7))
+                            .map((color) => color.withOpacity(0.8))
                             .toList(),
                       ),
-                      barWidth: 1,
+                      barWidth: 0,
                       belowBarData: BarAreaData(
                         show: true,
                         gradient: LinearGradient(
@@ -86,7 +87,7 @@ class _VisualTestState extends ConsumerState<VisualTest> {
               );
             },
             error: (error, stack) => Text('Error: $error'),
-            loading: () => CircularProgressIndicator(),
+            loading: () =>Text(""),
           );
         },
       ),
