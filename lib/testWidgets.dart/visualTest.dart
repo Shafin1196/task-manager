@@ -14,7 +14,7 @@ class VisualTest extends ConsumerStatefulWidget {
 class _VisualTestState extends ConsumerState<VisualTest> {
   List<FlSpot> spots = [];
   double x = 0;
-  double xMax=60,xMin=0;
+  double xMax = 60, xMin = 0;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -26,29 +26,36 @@ class _VisualTestState extends ConsumerState<VisualTest> {
 
           return streams.when(
             data: (data) {
-              if(spots.length>=60){
+              if (spots.length >= 60) {
                 spots.removeAt(0);
               }
               if (data.containsKey('id')) {
-                double yValue=double.parse((100 - data['id']!).toStringAsFixed(2));
-                yValue>=0?spots.add(FlSpot(x, yValue)):spots.add(FlSpot(x, 0));
+                double yValue = double.parse(
+                  (100 - data['id']!).toStringAsFixed(2),
+                );
+                if (yValue.isNaN || yValue < 0) {
+                  print("hi");
+                }
+                yValue >= 0
+                    ? spots.add(FlSpot(x, yValue))
+                    : spots.add(FlSpot(x, 0));
                 x++;
               }
-              if(x>60){
-                xMax=x;
-                xMin+=1;
+              if (x > 60) {
+                xMax = x;
+                xMin += 1;
               }
               return LineChart(
                 LineChartData(
-                  titlesData: FlTitlesData(
-                    show: false,
-                    
+                  titlesData: FlTitlesData(show: false),
+                  lineTouchData: LineTouchData(
+                    enabled: false
                   ),
-                  
+
                   maxX: xMax,
                   minX: xMin,
-                  maxY: 105,
-                  minY: -5,
+                  maxY: 100,
+                  minY: 0,
                   gridData: FlGridData(
                     show: true,
                     getDrawingHorizontalLine: (value) {
@@ -66,7 +73,7 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                     LineChartBarData(
                       spots: spots,
                       dotData: FlDotData(show: false),
-                      isCurved: true,
+                      isCurved: false,
                       gradient: LinearGradient(
                         colors: gradientColor
                             .map((color) => color.withOpacity(0.8))
@@ -87,7 +94,7 @@ class _VisualTestState extends ConsumerState<VisualTest> {
               );
             },
             error: (error, stack) => Text('Error: $error'),
-            loading: () =>Text(""),
+            loading: () => Text(""),
           );
         },
       ),
