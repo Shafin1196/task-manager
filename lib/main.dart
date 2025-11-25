@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_manager/Screens/homeScreens.dart';
-import 'package:task_manager/testWidgets.dart/strembuilderTest.dart';
 import 'package:window_size/window_size.dart';
 
 void main() {

@@ -1,0 +1,8 @@
+Package: taskmanager
+Version: 1.0.0
+Section: base
+Priority: optional
+Architecture: amd64
+Depends: libgtk-3-0, libayatana-appindicator3-1,ifstat
+Maintainer: Rokaya Sultana Raka <rokayaraka251@email.com>
+Description: Flutter linux application packaged as .deb

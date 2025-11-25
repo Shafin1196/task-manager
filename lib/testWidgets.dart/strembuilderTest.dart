@@ -17,7 +17,7 @@ class _TestState extends ConsumerState<Test> {
     return Scaffold(
       body: Center(
         child: Consumer(builder: (context,ref,child){
-          final streams=ref.watch(cpuBuilder);
+          final streams=ref.watch(ramBuilder);
 
           return streams.when(
             data: (data){

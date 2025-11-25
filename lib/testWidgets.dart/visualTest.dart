@@ -5,8 +5,8 @@ import 'package:task_manager/constant.dart';
 import 'package:task_manager/providers/streamBuilder.dart';
 
 class VisualTest extends ConsumerStatefulWidget {
-  const VisualTest({super.key});
-
+  const VisualTest({super.key,required this.showGrid});
+  final bool showGrid;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _VisualTestState();
 }
@@ -33,12 +33,7 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                 double yValue = double.parse(
                   (100 - data['id']!).toStringAsFixed(2),
                 );
-                if (yValue.isNaN || yValue < 0) {
-                  print("hi");
-                }
-                yValue >= 0
-                    ? spots.add(FlSpot(x, yValue))
-                    : spots.add(FlSpot(x, 0));
+                spots.add(FlSpot(x, yValue));
                 x++;
               }
               if (x > 60) {
@@ -51,13 +46,12 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                   lineTouchData: LineTouchData(
                     enabled: false
                   ),
-
                   maxX: xMax,
                   minX: xMin,
                   maxY: 100,
                   minY: 0,
                   gridData: FlGridData(
-                    show: true,
+                    show: widget.showGrid,
                     getDrawingHorizontalLine: (value) {
                       return FlLine(color: Color(0xff37434d), strokeWidth: 2);
                     },
