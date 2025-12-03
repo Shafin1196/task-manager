@@ -28,8 +28,12 @@ class _VisualtestNetState extends ConsumerState<VisualtestNet> {
 
           return streams.when(
             data: (data) {
-              if (spots.length >= 60) {
+              if (spots.length >= 63) {
                 spots.removeAt(0);
+              }
+              if (x > 60) {
+                xMax = x;
+                xMin += 1;
               }
               if (data.containsKey('throughPut')) {
                 double yValue = data['throughPut']!;
@@ -39,10 +43,7 @@ class _VisualtestNetState extends ConsumerState<VisualtestNet> {
                 x++;
               }
               
-              if (x > 60) {
-                xMax = x;
-                xMin += 1;
-              }
+              
               
               return 
               LineChart(
@@ -51,6 +52,7 @@ class _VisualtestNetState extends ConsumerState<VisualtestNet> {
                   lineTouchData: LineTouchData(
                     enabled: false
                   ),
+                  clipData: FlClipData.all(),
                   maxX: xMax,
                   minX: xMin,
                   maxY: data['max'],

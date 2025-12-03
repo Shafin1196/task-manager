@@ -4,6 +4,7 @@ import 'package:task_manager/providers/getCpuInfo.dart';
 import 'package:task_manager/providers/streamBuilder.dart';
 import 'package:task_manager/testWidgets.dart/visualTest.dart';
 import 'package:task_manager/testWidgets.dart/visualTestMem.dart';
+import 'package:task_manager/testWidgets.dart/visulaTestDisk.dart';
 import 'package:task_manager/testWidgets.dart/visulaTestNet.dart';
 
 class Visualization extends ConsumerStatefulWidget {
@@ -56,6 +57,8 @@ class _VisualizationState extends ConsumerState<Visualization> {
                     ? Text("% Utilization")
                     : option == 'memory'
                     ? Text("Memory usages")
+                    :option =="Disk"
+                    ?Text("Disk Transfer rate")
                     : Text('Throughput'),
                 Spacer(),
                 option == "cpu"
@@ -73,25 +76,41 @@ class _VisualizationState extends ConsumerState<Visualization> {
                           );
                         },
                       )
+                    : option == "Disk"
+                    ? Consumer(
+                        builder: (context, ref, child) {
+                          final diskStream = ref.watch(diskBuilder);
+                          return diskStream.when(
+                            data: (data) {
+                              return Text("${data['max']!} kbps");
+                            },
+                            error: (error, stack) => Text('error!!!'),
+                            loading: () => Text(''),
+                          );
+                        },
+                      )
                     : Consumer(
                         builder: (context, ref, child) {
                           final streams = ref.watch(networkBuilder);
                           return streams.when(
-                            data: (data){
+                            data: (data) {
                               return Text("${data['max']} kbps");
                             },
-                            error: (error,stack)=> Center(child: Text("$error"),),
-                            loading: ()=>Text(""),
+                            error: (error, stack) =>
+                                Center(child: Text("$error")),
+                            loading: () => Text(""),
                           );
                         },
                       ),
               ],
             ),
             option == "cpu"
-                ? VisualTest(showGrid: true,)
+                ? VisualTest(showGrid: true)
                 : option == "memory"
-                ? Visualtestmem(showGrid: true,)
-                : VisualtestNet(showGrid: true,),
+                ? Visualtestmem(showGrid: true)
+                : option == "Disk"
+                ? VisualTestdisk(showGrid: true)
+                : VisualtestNet(showGrid: true),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +170,8 @@ class _VisualizationState extends ConsumerState<Visualization> {
                             );
                           },
                         )
-                      :option == "memory"? Consumer(
+                      : option == "memory"
+                      ? Consumer(
                           builder: (context, ref, child) {
                             final ramInfo = ref.watch(ramBuilder);
                             return ramInfo.when(
@@ -170,16 +190,21 @@ class _VisualizationState extends ConsumerState<Visualization> {
                                   Center(child: CircularProgressIndicator()),
                             );
                           },
-                        ):Consumer(
+                        )
+                      : option == "Disk"
+                      ? Consumer(
                           builder: (context, ref, child) {
-                            final netInfo = ref.watch(networkBuilder);
-                            return netInfo.when(
+                            final diskInfo = ref.watch(diskBuilder);
+                            return diskInfo.when(
                               data: (data) {
                                 return Column(
                                   children: [
-                                    Text(
-                                      'Send              :  ${data['up']} kbps\n\nRecieve         :  ${data['down']} kbps'
-                                    ),
+                                    Text('''
+read              :  ${data['read']} kbps\n
+write            :  ${data['write']} kbps\n
+Size            :  ${data['size']} GB\n
+used            :  ${data['used']} GB\n
+available           :  ${data['available']} GB'''),
                                   ],
                                 );
                               },
@@ -190,6 +215,26 @@ class _VisualizationState extends ConsumerState<Visualization> {
                             );
                           },
                         )
+                      : Consumer(
+                          builder: (context, ref, child) {
+                            final netInfo = ref.watch(networkBuilder);
+                            return netInfo.when(
+                              data: (data) {
+                                return Column(
+                                  children: [
+                                    Text(
+                                      'Send              :  ${data['up']} kbps\n\nRecieve         :  ${data['down']} kbps',
+                                    ),
+                                  ],
+                                );
+                              },
+                              error: (error, stack) =>
+                                  Center(child: Text("Error")),
+                              loading: () =>
+                                  Center(child: CircularProgressIndicator()),
+                            );
+                          },
+                        ),
                 ],
               ),
             ),

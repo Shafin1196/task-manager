@@ -26,8 +26,12 @@ class _VisualTestState extends ConsumerState<VisualTest> {
 
           return streams.when(
             data: (data) {
-              if (spots.length >= 60) {
+              if (spots.length >= 63) {
                 spots.removeAt(0);
+              }
+              if (x > 60) {
+                xMax = x;
+                xMin += 1;
               }
               if (data.containsKey('id')) {
                 double yValue = double.parse(
@@ -36,16 +40,14 @@ class _VisualTestState extends ConsumerState<VisualTest> {
                 spots.add(FlSpot(x, yValue));
                 x++;
               }
-              if (x > 60) {
-                xMax = x;
-                xMin += 1;
-              }
+              
               return LineChart(
                 LineChartData(
                   titlesData: FlTitlesData(show: false),
                   lineTouchData: LineTouchData(
                     enabled: false
                   ),
+                  clipData: FlClipData.all(),
                   maxX: xMax,
                   minX: xMin,
                   maxY: 100,

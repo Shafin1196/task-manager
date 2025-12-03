@@ -6,8 +6,8 @@ import 'package:window_size/window_size.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // runApp( ProviderScope(child: MyApp()));
-  setWindowMinSize(const Size(1000, 800));
-  setWindowMaxSize(const Size(1000, 800));
+  setWindowMinSize(const Size(1000, 820));
+  setWindowMaxSize(const Size(1000, 820));
   runApp(ProviderScope(child: MyApp()));
 }
 

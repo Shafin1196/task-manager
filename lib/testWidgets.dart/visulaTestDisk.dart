@@ -4,19 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_manager/constant.dart';
 import 'package:task_manager/providers/streamBuilder.dart';
 
-class Visualtestmem extends ConsumerStatefulWidget {
-  const Visualtestmem({super.key,required this.showGrid});
+class VisualTestdisk extends ConsumerStatefulWidget {
+  const VisualTestdisk({super.key, required this.showGrid});
   final bool showGrid;
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _VisualtestmemState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _VisualTestdiskState();
 }
 
-class _VisualtestmemState extends ConsumerState<Visualtestmem> {
-
+class _VisualTestdiskState extends ConsumerState<VisualTestdisk> {
   List<FlSpot> spots = [];
   double x = 0;
   double xMax = 60, xMin = 0;
-  double yMax=100;
+  double yMax = 100;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -24,38 +23,32 @@ class _VisualtestmemState extends ConsumerState<Visualtestmem> {
       width: 700,
       child: Consumer(
         builder: (context, ref, child) {
-          final streams = ref.watch(ramBuilder);
-          // final disk=ref.watch(diskBuilder);
-          // print(disk);
+          final streams = ref.watch(diskBuilder);
           return streams.when(
             data: (data) {
+              // print(data);
               if (x > 60) {
                 xMax = x;
                 xMin += 1;
               }
               if (spots.length >= 63) {
                 spots.removeAt(0);
-                
               }
-              if (data.containsKey('used')) {
-                double yValue = (double.parse(data['used']!)/double.parse(data['total']!))*100;
-                yValue >= 0
-                    ? spots.add(FlSpot(x, yValue))
-                    : spots.add(FlSpot(x, 0));
+              if (data.containsKey('throughPut')) {
+                double yValue = data["throughPut"]!;
+                // print(yValue);
+                spots.add(FlSpot(x, yValue));
                 x++;
               }
-              
-              
+
               return LineChart(
                 LineChartData(
                   titlesData: FlTitlesData(show: false),
                   clipData: FlClipData.all(),
-                  lineTouchData: LineTouchData(
-                    enabled: false
-                  ),
+                  lineTouchData: LineTouchData(enabled: false),
                   maxX: xMax,
                   minX: xMin,
-                  maxY: yMax,
+                  maxY: data['max'],
                   minY: 0,
                   gridData: FlGridData(
                     show: widget.showGrid,
@@ -94,8 +87,8 @@ class _VisualtestmemState extends ConsumerState<Visualtestmem> {
                 ),
               );
             },
-            error: (error, stack) => Text('Error: $error'),
-            loading: () => Text(""),
+            error: (error, stack) => Center(child: Text("error$error")),
+            loading: () => SizedBox.shrink(),
           );
         },
       ),
